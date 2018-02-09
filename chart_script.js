@@ -10,7 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
   var chart = d3.select(".chart")
                 .attr("width", width);
 
-  d3.tsv("./letter_frequency.tsv", type, function(err, data){
+  d3.tsv("letter_frequency.tsv", type, function(err, data){
+
+    console.log(data);
+    x.domain([0, d3.max(data, function(d) { return d.value; })]);
+    
+    chart.attr("height", barHeight * data.length);
+
     var bar = chart.selectAll("g")
       .data(data)
       .enter("g")
@@ -18,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .attr("transform", function(d, i){return "translate(0,"+i*barHeight + ")"});
 
     bar.append("rect")
-        .attr("width", function(d){return (x(d.value))})
+        .attr("width", function(d){return (x(d.value)); })
         .attr("height", barHeight -1);
     
     bar.append("text")
@@ -29,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function type(d){
-    d.value = +d.value;
+    d.value = d.frequency*10;
     return d;
   }
 
